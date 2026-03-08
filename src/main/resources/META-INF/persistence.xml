@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="3.0" xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
+    <persistence-unit name="jpql-study">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+        <properties>
+            <!-- jpaShop 참고: H2 + 자동 스키마 생성 -->
+            <property name="jakarta.persistence.jdbc.driver" value="org.h2.Driver"/>
+            <!-- TCP 서버 모드 (H2 Server 실행 후 동시 접속 가능) -->
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:h2:tcp://localhost:9092/~/git/jpql/h2db/jpql"/>
+            <property name="jakarta.persistence.jdbc.user" value="sa"/>
+            <property name="jakarta.persistence.jdbc.password" value=""/>
+
+            <!-- 종료 후에도 테이블 유지 -->
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            <!-- 입문 실습 기본값: 콘솔 메시지 최소화 -->
+            <property name="hibernate.show_sql" value="false"/>
+            <property name="hibernate.format_sql" value="false"/>
+            <property name="hibernate.use_sql_comments" value="false"/>
+        </properties>
+    </persistence-unit>
+</persistence>

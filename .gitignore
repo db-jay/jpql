@@ -1,0 +1,34 @@
+# =========================
+# Java / Maven
+# =========================
+target/
+*.class
+*.jar
+*.war
+*.ear
+
+# Maven wrapper cache (optional; keep wrapper scripts/properties)
+.mvn/wrapper/maven-wrapper.jar
+
+# =========================
+# IDE / OS
+# =========================
+.idea/
+*.iml
+.vscode/
+.DS_Store
+
+# =========================
+# Logs / temp
+# =========================
+*.log
+*.tmp
+*.swp
+
+# =========================
+# Local runtime data
+# =========================
+h2db/
+
+# OMX local workspace metadata
+.omx/
