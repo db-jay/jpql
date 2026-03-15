@@ -15,9 +15,10 @@
 
             <!-- 종료 후에도 테이블 유지 -->
             <property name="hibernate.hbm2ddl.auto" value="update"/>
-            <!-- 입문 실습 기본값: 콘솔 메시지 최소화 -->
-            <property name="hibernate.show_sql" value="false"/>
-            <property name="hibernate.format_sql" value="false"/>
+            <!-- SQL 확인용 -->
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+            <property name="hibernate.highlight_sql" value="false"/>
             <property name="hibernate.use_sql_comments" value="false"/>
         </properties>
     </persistence-unit>

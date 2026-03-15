@@ -14,11 +14,14 @@ import java.util.List;
 public class JpaMain {
 
     public static void main(String[] args) {
-        // Hibernate 내부 로그를 slf4j-simple로 보내고, 로그 레벨을 최소화한다.
-        // (IntelliJ에서 실행 시 부트 로그가 너무 많이 보이는 문제 대응)
+        // Hibernate 기본 show_sql 출력으로 SQL을 본다. (? placeholder 유지, 컬러 하이라이트 비활성화)
+        // (IntelliJ에서 실행 시 부트 로그는 최소화)
         System.setProperty("org.jboss.logging.provider", "slf4j");
         System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "error");
         System.setProperty("org.slf4j.simpleLogger.log.org.hibernate", "error");
+        System.setProperty("hibernate.show_sql", "true");
+        System.setProperty("hibernate.format_sql", "true");
+        System.setProperty("hibernate.highlight_sql", "false");
 
         // persistence.xml의 persistence-unit name("jpql-study")과 반드시 같아야 한다.
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("jpql-study");
@@ -44,15 +47,20 @@ public class JpaMain {
 //            memberScalarProjection(em);        // SELECT m.name, m.age FROM Member m
 
             // 페이징
-            List<Member> result = em.createQuery("select m from Member m order by m.age desc", Member.class)
-                .setFirstResult(0)
-                .setMaxResults(10)
-                .getResultList();
+            pagingQuery(em, 0, 10);
 
-            System.out.println("result.size = " + result.size());
-            for (Member member : result) {
-                System.out.println("member1" + member);
-            }
+            // 조인
+            // 1. INNER JOIN
+//            String query = "SELECT m FROM Member m INNER JOIN m.team t";
+//            List<Member> members = em.createQuery(query, Member.class)
+//                    .setFirstResult(1)
+//                    .setMaxResults(10)
+//                    .getResultList();
+
+            // 2. LEFT OUTER JOIN
+            String query = "SELECT m, t FROM Member m LEFT JOIN m.team t";
+            List<Object[]> rows = em.createQuery(query, Object[].class).getResultList();
+
 
             // Bulk delete 연습 시 FK 제약 순서를 지켜야 한다.
             // 잘못된 예: delete from Order 먼저 실행 -> OrderItem FK 위반 발생
@@ -143,6 +151,19 @@ public class JpaMain {
 
         System.out.println("\n=== [Projection #4] SELECT m.name, m.age FROM Member m ===");
         result.forEach(dto -> System.out.printf("name=%s, age=%s%n", dto.getName(), dto.getAge()));
+    }
+
+    private static void pagingQuery(EntityManager em, int firstResult, int maxResults) {
+        List<Member> result = em.createQuery(
+                        "select m from Member m order by m.age desc", Member.class)
+                .setFirstResult(firstResult)
+                .setMaxResults(maxResults)
+                .getResultList();
+
+        System.out.println("result.size = " + result.size());
+        for (Member member : result) {
+            System.out.println("member1" + member);
+        }
     }
 
 
