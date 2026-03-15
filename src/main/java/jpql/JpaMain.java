@@ -49,6 +49,9 @@ public class JpaMain {
             // 페이징
             pagingQuery(em, 0, 10);
 
+            // 서브쿼리
+            subQueryExamples(em);
+
             // 조인
             // 1. INNER JOIN
 //            String query = "SELECT m FROM Member m INNER JOIN m.team t";
@@ -164,6 +167,33 @@ public class JpaMain {
         for (Member member : result) {
             System.out.println("member1" + member);
         }
+    }
+
+    private static void subQueryExamples(EntityManager em) {
+        // JPQL 서브쿼리 예제 #1: 평균 나이 이상 회원 (비연관 서브쿼리)
+        List<Member> avgOrOlderMembers = em.createQuery(
+                        "select m from Member m " +
+                                "where m.age >= (select avg(m2.age) from Member m2) " +
+                                "order by m.id", Member.class)
+                .getResultList();
+
+        System.out.println("\n=== [SubQuery #1] 평균 나이 이상 회원 ===");
+        avgOrOlderMembers.forEach(m ->
+                System.out.printf("member=%s, age=%d%n", m.getName(), m.getAge()));
+
+        // JPQL 서브쿼리 예제 #2: 주문이 있는 회원 (연관 서브쿼리 + EXISTS)
+        List<Member> orderedMembers = em.createQuery(
+                        "select m from Member m " +
+                                "where exists (" +
+                                "  select o.id from Order o " +
+                                "  where o.member = m and o.status = :status" +
+                                ") " +
+                                "order by m.id", Member.class)
+                .setParameter("status", OrderStatus.ORDER)
+                .getResultList();
+
+        System.out.println("\n=== [SubQuery #2] 주문이 있는 회원(EXISTS) ===");
+        orderedMembers.forEach(m -> System.out.printf("member=%s%n", m.getName()));
     }
 
 
